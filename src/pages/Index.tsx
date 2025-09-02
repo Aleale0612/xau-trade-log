@@ -9,7 +9,7 @@ const Index = () => {
       {/* Hero Section */}
       <div className="text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-trading-light bg-clip-text text-transparent">
-          Journalpapers
+          JournalPapers
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Professional trading journal for XAUUSD (Gold) trades. Track your performance, analyze your results, and improve your trading strategy.
