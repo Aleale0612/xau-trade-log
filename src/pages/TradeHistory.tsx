@@ -131,7 +131,7 @@ const TradeHistory = () => {
         </div>
       </div>
 
-      <Card>
+      <Card className="theme-transition shadow-lg border border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center">
             <TrendingUp className="w-5 h-5 mr-2 text-primary" />
@@ -193,12 +193,12 @@ const TradeHistory = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="theme-transition hover:bg-primary/10">
                             <Edit2 className="w-3 h-3" />
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="outline" size="sm">
+                              <Button variant="outline" size="sm" className="theme-transition hover:bg-destructive/10 hover:text-destructive">
                                 <Trash2 className="w-3 h-3" />
                               </Button>
                             </AlertDialogTrigger>

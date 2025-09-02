@@ -133,7 +133,7 @@ const AddTrade = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-gradient-to-br from-card to-card/50">
+        <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center">
               <DollarSign className="w-5 h-5 mr-2 text-primary" />
@@ -229,7 +229,7 @@ const AddTrade = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-card to-card/50">
+        <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Calculator className="w-5 h-5 mr-2 text-success" />
@@ -238,21 +238,21 @@ const AddTrade = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary">
+              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
                 <span className="font-medium">P&L (IDR)</span>
                 <span className={`font-bold ${calculations.profitLossIDR >= 0 ? 'text-success' : 'text-loss'}`}>
                   Rp {calculations.profitLossIDR.toLocaleString('id-ID')}
                 </span>
               </div>
               
-              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary">
+              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
                 <span className="font-medium">P&L (%)</span>
                 <span className={`font-bold ${calculations.profitLossPercent >= 0 ? 'text-success' : 'text-loss'}`}>
                   {calculations.profitLossPercent.toFixed(2)}%
                 </span>
               </div>
               
-              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary">
+              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
                 <span className="font-medium">Risk Reward</span>
                 <span className="font-bold text-primary">
                   1:{calculations.riskReward.toFixed(2)}

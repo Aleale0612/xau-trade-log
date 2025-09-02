@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "next-themes";
 import {
   BarChart,
   Bar,
@@ -49,6 +50,7 @@ interface AnalyticsData {
 
 const Analytics = () => {
   const { toast } = useToast();
+  const { theme } = useTheme();
   const [trades, setTrades] = useState<Trade[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsData>({
     totalTrades: 0,
@@ -166,13 +168,27 @@ const Analytics = () => {
       pairData[trade.pair] = (pairData[trade.pair] || 0) + trade.result_usd;
     });
 
-    const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+    // Dynamic colors based on theme
+    const isDark = theme === 'dark';
+    const colors = isDark 
+      ? ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6']
+      : ['#1E40AF', '#059669', '#D97706', '#DC2626', '#7C3AED'];
     
     return Object.entries(pairData).map(([pair, profit], index) => ({
       name: pair,
       value: Math.abs(profit * 15500), // Convert to IDR and use absolute value for pie chart
       color: colors[index % colors.length],
     }));
+  };
+
+  const getChartColors = () => {
+    const isDark = theme === 'dark';
+    return {
+      primary: isDark ? 'hsl(217, 91%, 60%)' : 'hsl(217, 91%, 35%)',
+      success: isDark ? 'hsl(142, 71%, 45%)' : 'hsl(142, 71%, 35%)',
+      grid: isDark ? 'hsl(215, 28%, 25%)' : 'hsl(217, 20%, 88%)',
+      text: isDark ? 'hsl(213, 31%, 91%)' : 'hsl(223, 25%, 15%)',
+    };
   };
 
   const downloadPDF = () => {
@@ -210,7 +226,7 @@ const Analytics = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -222,7 +238,7 @@ const Analytics = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -236,7 +252,7 @@ const Analytics = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -250,7 +266,7 @@ const Analytics = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -262,7 +278,7 @@ const Analytics = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -274,7 +290,7 @@ const Analytics = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -289,24 +305,32 @@ const Analytics = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardHeader>
             <CardTitle>Profit by Week</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={getProfitByWeek()}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="period" />
-                <YAxis />
-                <Tooltip formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Profit']} />
-                <Bar dataKey="profit" fill="hsl(var(--primary))" />
+                <CartesianGrid strokeDasharray="3 3" stroke={getChartColors().grid} />
+                <XAxis dataKey="period" stroke={getChartColors().text} />
+                <YAxis stroke={getChartColors().text} />
+                <Tooltip 
+                  formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Profit']}
+                  contentStyle={{
+                    backgroundColor: theme === 'dark' ? 'hsl(224, 71%, 4%)' : 'hsl(0, 0%, 100%)',
+                    border: `1px solid ${getChartColors().grid}`,
+                    borderRadius: '8px',
+                    color: getChartColors().text
+                  }}
+                />
+                <Bar dataKey="profit" fill={getChartColors().primary} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardHeader>
             <CardTitle>Profit by Pair</CardTitle>
           </CardHeader>
@@ -324,41 +348,71 @@ const Analytics = () => {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Profit']} />
+                <Tooltip 
+                  formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Profit']}
+                  contentStyle={{
+                    backgroundColor: theme === 'dark' ? 'hsl(224, 71%, 4%)' : 'hsl(0, 0%, 100%)',
+                    border: `1px solid ${getChartColors().grid}`,
+                    borderRadius: '8px',
+                    color: getChartColors().text
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardHeader>
             <CardTitle>Profit by Month</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={getProfitByMonth()}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="period" />
-                <YAxis />
-                <Tooltip formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Profit']} />
-                <Bar dataKey="profit" fill="hsl(var(--success))" />
+                <CartesianGrid strokeDasharray="3 3" stroke={getChartColors().grid} />
+                <XAxis dataKey="period" stroke={getChartColors().text} />
+                <YAxis stroke={getChartColors().text} />
+                <Tooltip 
+                  formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Profit']}
+                  contentStyle={{
+                    backgroundColor: theme === 'dark' ? 'hsl(224, 71%, 4%)' : 'hsl(0, 0%, 100%)',
+                    border: `1px solid ${getChartColors().grid}`,
+                    borderRadius: '8px',
+                    color: getChartColors().text
+                  }}
+                />
+                <Bar dataKey="profit" fill={getChartColors().success} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="theme-transition shadow-lg border border-border/50">
           <CardHeader>
             <CardTitle>Equity Curve</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={getEquityCurve()}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Balance']} />
-                <Line type="monotone" dataKey="balance" stroke="hsl(var(--primary))" strokeWidth={2} />
+                <CartesianGrid strokeDasharray="3 3" stroke={getChartColors().grid} />
+                <XAxis dataKey="date" stroke={getChartColors().text} />
+                <YAxis stroke={getChartColors().text} />
+                <Tooltip 
+                  formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Balance']}
+                  contentStyle={{
+                    backgroundColor: theme === 'dark' ? 'hsl(224, 71%, 4%)' : 'hsl(0, 0%, 100%)',
+                    border: `1px solid ${getChartColors().grid}`,
+                    borderRadius: '8px',
+                    color: getChartColors().text
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="balance" 
+                  stroke={getChartColors().primary} 
+                  strokeWidth={2} 
+                  dot={{ fill: getChartColors().primary, strokeWidth: 2 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>

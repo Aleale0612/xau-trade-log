@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Plus, History, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Navigation = () => {
   const location = useLocation();
@@ -24,7 +25,7 @@ export const Navigation = () => {
   ];
 
   return (
-    <header className="bg-card border-b border-border">
+    <header className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-50 theme-transition">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -33,28 +34,56 @@ export const Navigation = () => {
             </h1>
           </div>
           
-          <nav className="flex space-x-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={cn(
-                    "flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  )}
-                >
-                  <Icon className="w-4 h-4 mr-2" />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
+          <div className="flex items-center space-x-4">
+            <nav className="hidden sm:flex space-x-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 theme-transition",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                    )}
+                  >
+                    <Icon className="w-4 h-4 mr-2" />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Mobile Navigation */}
+            <nav className="flex sm:hidden space-x-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "flex items-center p-2 rounded-lg text-sm font-medium transition-all duration-200 theme-transition",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                    )}
+                    title={item.name}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </Link>
+                );
+              })}
+            </nav>
+            
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>

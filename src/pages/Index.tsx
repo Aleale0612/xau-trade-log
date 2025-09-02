@@ -19,7 +19,7 @@ const Index = () => {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to="/add-trade">
-          <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary">
+          <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary theme-transition group">
             <CardHeader className="text-center">
               <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <Plus className="w-6 h-6 text-primary" />
@@ -35,7 +35,7 @@ const Index = () => {
         </Link>
 
         <Link to="/history">
-          <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary">
+          <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary theme-transition group">
             <CardHeader className="text-center">
               <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <History className="w-6 h-6 text-primary" />
@@ -51,7 +51,7 @@ const Index = () => {
         </Link>
 
         <Link to="/analytics">
-          <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary">
+          <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary theme-transition group">
             <CardHeader className="text-center">
               <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <TrendingUp className="w-6 h-6 text-primary" />
@@ -68,7 +68,7 @@ const Index = () => {
       </div>
 
       {/* Features */}
-      <div className="bg-gradient-to-br from-card to-card/50 rounded-lg p-8">
+      <div className="bg-gradient-to-br from-card to-card/50 rounded-lg p-8 border border-border/30 theme-transition shadow-lg">
         <h2 className="text-2xl font-bold text-center mb-8">Key Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="text-center space-y-2">
