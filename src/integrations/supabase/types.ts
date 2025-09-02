@@ -45,6 +45,7 @@ export type Database = {
           pair: string
           pnl_percent: number
           result_usd: number
+          risk_percent: number | null
           risk_reward: number | null
           sl: number | null
           tp: number | null
@@ -61,6 +62,7 @@ export type Database = {
           pair: string
           pnl_percent: number
           result_usd: number
+          risk_percent?: number | null
           risk_reward?: number | null
           sl?: number | null
           tp?: number | null
@@ -77,6 +79,7 @@ export type Database = {
           pair?: string
           pnl_percent?: number
           result_usd?: number
+          risk_percent?: number | null
           risk_reward?: number | null
           sl?: number | null
           tp?: number | null
