@@ -37,6 +37,7 @@ export type Database = {
           contract_size: number
           created_at: string
           direction: Database["public"]["Enums"]["trade_direction"]
+          emotional_psychology: string | null
           entry_price: number
           exit_price: number
           id: string
@@ -48,12 +49,15 @@ export type Database = {
           risk_percent: number | null
           risk_reward: number | null
           sl: number | null
+          stop_loss: number | null
+          take_profit: number | null
           tp: number | null
         }
         Insert: {
           contract_size: number
           created_at?: string
           direction?: Database["public"]["Enums"]["trade_direction"]
+          emotional_psychology?: string | null
           entry_price: number
           exit_price: number
           id?: string
@@ -65,12 +69,15 @@ export type Database = {
           risk_percent?: number | null
           risk_reward?: number | null
           sl?: number | null
+          stop_loss?: number | null
+          take_profit?: number | null
           tp?: number | null
         }
         Update: {
           contract_size?: number
           created_at?: string
           direction?: Database["public"]["Enums"]["trade_direction"]
+          emotional_psychology?: string | null
           entry_price?: number
           exit_price?: number
           id?: string
@@ -82,6 +89,8 @@ export type Database = {
           risk_percent?: number | null
           risk_reward?: number | null
           sl?: number | null
+          stop_loss?: number | null
+          take_profit?: number | null
           tp?: number | null
         }
         Relationships: []

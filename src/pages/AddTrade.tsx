@@ -19,9 +19,12 @@ const AddTrade = () => {
     direction: "buy" as "buy" | "sell",
     entryPrice: "",
     exitPrice: "",
+    stopLoss: "",
+    takeProfit: "",
     lotSize: "",
-    riskPercent: "",
+    riskPercent: "2",
     notes: "",
+    emotionalPsychology: "calm",
   });
 
   const [calculations, setCalculations] = useState({
@@ -32,39 +35,50 @@ const AddTrade = () => {
 
   const calculateResults = () => {
     const entry = parseFloat(formData.entryPrice);
-    const exit = parseFloat(formData.exitPrice);
-    const lots = parseFloat(formData.lotSize);
+    const sl = parseFloat(formData.stopLoss);
+    const tp = parseFloat(formData.takeProfit);
     const risk = parseFloat(formData.riskPercent);
 
-    if (!entry || !exit || !lots) return;
+    if (!entry || !sl || !tp || !risk) return;
 
     // XAUUSD contract size is typically 100 oz
     const contractSize = 100;
     const pipSize = 0.01;
     
-    // Calculate pip difference
-    let pipDifference = formData.direction === "buy" ? (exit - entry) : (entry - exit);
-    pipDifference = pipDifference / pipSize;
+    // Calculate risk in pips
+    const riskPips = Math.abs(entry - sl) / pipSize;
     
-    // Calculate P&L in USD
-    const profitLossUSD = pipDifference * pipSize * lots * contractSize;
-    
-    // Convert to IDR (assuming 1 USD = 15,500 IDR - you can make this dynamic)
-    const usdToIdr = 15500;
-    const profitLossIDR = profitLossUSD * usdToIdr;
-    
-    // Calculate percentage (assuming account balance - you can make this dynamic)
-    const accountBalance = 10000; // Default account balance in USD
-    const profitLossPercent = (profitLossUSD / accountBalance) * 100;
+    // Calculate reward in pips
+    const rewardPips = Math.abs(tp - entry) / pipSize;
     
     // Calculate risk reward ratio
-    const riskReward = risk > 0 ? Math.abs(profitLossPercent / risk) : 0;
+    const riskReward = rewardPips / riskPips;
+    
+    // Calculate lot size based on risk percentage
+    const accountBalance = 10000; // Default account balance in USD
+    const riskAmount = (accountBalance * risk) / 100;
+    const lotSize = riskAmount / (riskPips * pipSize * contractSize);
+    
+    // Update lot size in form
+    setFormData(prev => ({ ...prev, lotSize: lotSize.toFixed(2) }));
 
     setCalculations({
-      profitLossIDR: profitLossIDR,
-      profitLossPercent: profitLossPercent,
+      profitLossIDR: 0, // Will be calculated on exit
+      profitLossPercent: 0, // Will be calculated on exit
       riskReward: riskReward,
     });
+  };
+
+  const validateInputs = () => {
+    const entry = parseFloat(formData.entryPrice);
+    const sl = parseFloat(formData.stopLoss);
+    const tp = parseFloat(formData.takeProfit);
+
+    if (formData.direction === "buy") {
+      return sl < entry && entry < tp;
+    } else {
+      return tp < entry && entry < sl;
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -74,7 +88,7 @@ const AddTrade = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.entryPrice || !formData.exitPrice || !formData.lotSize) {
+    if (!formData.entryPrice || !formData.stopLoss || !formData.takeProfit || !formData.lotSize) {
       toast({
         title: "Missing Fields",
         description: "Please fill in all required fields.",
@@ -83,21 +97,33 @@ const AddTrade = () => {
       return;
     }
 
-    calculateResults();
+    if (!validateInputs()) {
+      toast({
+        title: "Invalid Input",
+        description: formData.direction === "buy" 
+          ? "For Buy orders: SL < Entry < TP" 
+          : "For Sell orders: TP < Entry < SL",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
       const { error } = await supabase.from("trades").insert({
         pair: formData.pair,
         direction: formData.direction,
         entry_price: parseFloat(formData.entryPrice),
-        exit_price: parseFloat(formData.exitPrice),
+        exit_price: parseFloat(formData.takeProfit), // Using TP as exit for now
+        sl: parseFloat(formData.stopLoss),
+        tp: parseFloat(formData.takeProfit),
         lot_size: parseFloat(formData.lotSize),
         contract_size: 100, // XAUUSD standard
-        result_usd: calculations.profitLossIDR / 15500,
-        pnl_percent: calculations.profitLossPercent,
+        result_usd: 0, // Will be calculated when trade is closed
+        pnl_percent: 0, // Will be calculated when trade is closed
         risk_reward: calculations.riskReward,
-        risk_percent: parseFloat(formData.riskPercent) || null,
+        risk_percent: parseFloat(formData.riskPercent),
         notes: formData.notes || null,
+        emotional_psychology: formData.emotionalPsychology,
       });
 
       if (error) throw error;
@@ -107,7 +133,19 @@ const AddTrade = () => {
         description: "Your trade has been successfully recorded.",
       });
 
-      navigate("/history");
+      // Reset form
+      setFormData({
+        pair: "XAUUSD",
+        direction: "buy",
+        entryPrice: "",
+        exitPrice: "",
+        stopLoss: "",
+        takeProfit: "",
+        lotSize: "",
+        riskPercent: "2",
+        notes: "",
+        emotionalPsychology: "calm",
+      });
     } catch (error) {
       console.error("Error adding trade:", error);
       toast({
@@ -120,10 +158,10 @@ const AddTrade = () => {
 
   // Recalculate when key fields change
   React.useEffect(() => {
-    if (formData.entryPrice && formData.exitPrice && formData.lotSize) {
+    if (formData.entryPrice && formData.stopLoss && formData.takeProfit && formData.riskPercent) {
       calculateResults();
     }
-  }, [formData.entryPrice, formData.exitPrice, formData.lotSize, formData.direction]);
+  }, [formData.entryPrice, formData.stopLoss, formData.takeProfit, formData.riskPercent, formData.direction]);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -166,41 +204,56 @@ const AddTrade = () => {
               </Select>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="entryPrice">Entry Price</Label>
+              <Input
+                id="entryPrice"
+                type="number"
+                step="0.01"
+                placeholder="2050.00"
+                value={formData.entryPrice}
+                onChange={(e) => handleInputChange("entryPrice", e.target.value)}
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="entryPrice">Entry Price</Label>
+                <Label htmlFor="stopLoss">Stop Loss (SL)</Label>
                 <Input
-                  id="entryPrice"
+                  id="stopLoss"
                   type="number"
                   step="0.01"
-                  placeholder="2050.00"
-                  value={formData.entryPrice}
-                  onChange={(e) => handleInputChange("entryPrice", e.target.value)}
+                  placeholder="2045.00"
+                  value={formData.stopLoss}
+                  onChange={(e) => handleInputChange("stopLoss", e.target.value)}
+                  className={!validateInputs() && formData.entryPrice && formData.stopLoss ? "border-destructive" : ""}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="exitPrice">Exit Price</Label>
+                <Label htmlFor="takeProfit">Take Profit (TP)</Label>
                 <Input
-                  id="exitPrice"
+                  id="takeProfit"
                   type="number"
                   step="0.01"
                   placeholder="2055.00"
-                  value={formData.exitPrice}
-                  onChange={(e) => handleInputChange("exitPrice", e.target.value)}
+                  value={formData.takeProfit}
+                  onChange={(e) => handleInputChange("takeProfit", e.target.value)}
+                  className={!validateInputs() && formData.entryPrice && formData.takeProfit ? "border-destructive" : ""}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="lotSize">Lot Size</Label>
+                <Label htmlFor="lotSize">Lot Size (Auto)</Label>
                 <Input
                   id="lotSize"
                   type="number"
                   step="0.01"
                   placeholder="0.10"
                   value={formData.lotSize}
-                  onChange={(e) => handleInputChange("lotSize", e.target.value)}
+                  readOnly
+                  className="bg-secondary/20"
                 />
               </div>
               <div className="space-y-2">
@@ -214,6 +267,23 @@ const AddTrade = () => {
                   onChange={(e) => handleInputChange("riskPercent", e.target.value)}
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="emotionalPsychology">Emotional Psychology</Label>
+              <Select value={formData.emotionalPsychology} onValueChange={(value) => handleInputChange("emotionalPsychology", value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="emotional">Emotional</SelectItem>
+                  <SelectItem value="calm">Calm</SelectItem>
+                  <SelectItem value="overconfident">Overconfident</SelectItem>
+                  <SelectItem value="fearful">Fearful</SelectItem>
+                  <SelectItem value="greedy">Greedy</SelectItem>
+                  <SelectItem value="disciplined">Disciplined</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
@@ -239,24 +309,29 @@ const AddTrade = () => {
           <CardContent className="space-y-4">
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
-                <span className="font-medium">P&L (IDR)</span>
-                <span className={`font-bold ${calculations.profitLossIDR >= 0 ? 'text-success' : 'text-loss'}`}>
-                  Rp {calculations.profitLossIDR.toLocaleString('id-ID')}
-                </span>
-              </div>
-              
-              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
-                <span className="font-medium">P&L (%)</span>
-                <span className={`font-bold ${calculations.profitLossPercent >= 0 ? 'text-success' : 'text-loss'}`}>
-                  {calculations.profitLossPercent.toFixed(2)}%
-                </span>
-              </div>
-              
-              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
                 <span className="font-medium">Risk Reward</span>
                 <span className="font-bold text-primary">
                   1:{calculations.riskReward.toFixed(2)}
                 </span>
+              </div>
+              
+              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
+                <span className="font-medium">Auto Lot Size</span>
+                <span className="font-bold text-foreground">
+                  {formData.lotSize || "0.00"}
+                </span>
+              </div>
+              
+              <div className="p-3 rounded-lg bg-secondary/20 border border-border/30 theme-transition">
+                <div className="text-sm text-muted-foreground mb-2">Validation:</div>
+                <div className={`text-sm font-medium ${validateInputs() || (!formData.entryPrice || !formData.stopLoss || !formData.takeProfit) ? 'text-success' : 'text-destructive'}`}>
+                  {formData.direction === "buy" ? "Buy: SL < Entry < TP" : "Sell: TP < Entry < SL"}
+                </div>
+                {formData.entryPrice && formData.stopLoss && formData.takeProfit && (
+                  <div className={`text-xs mt-1 ${validateInputs() ? 'text-success' : 'text-destructive'}`}>
+                    {validateInputs() ? "✓ Valid setup" : "✗ Invalid setup"}
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>

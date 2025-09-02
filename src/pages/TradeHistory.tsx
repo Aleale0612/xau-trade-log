@@ -34,10 +34,14 @@ interface Trade {
   direction: "buy" | "sell";
   entry_price: number;
   exit_price: number;
+  sl: number | null;
+  tp: number | null;
   lot_size: number;
   result_usd: number;
   pnl_percent: number;
+  risk_reward: number | null;
   notes: string | null;
+  emotional_psychology: string | null;
 }
 
 const TradeHistory = () => {
@@ -152,10 +156,13 @@ const TradeHistory = () => {
                     <TableHead>Pair</TableHead>
                     <TableHead>Direction</TableHead>
                     <TableHead>Entry</TableHead>
+                    <TableHead>SL</TableHead>
+                    <TableHead>TP</TableHead>
                     <TableHead>Exit</TableHead>
-                    <TableHead>Lot Size</TableHead>
+                    <TableHead>Lot</TableHead>
+                    <TableHead>RR</TableHead>
                     <TableHead>P&L (IDR)</TableHead>
-                    <TableHead>P&L (%)</TableHead>
+                    <TableHead>Psychology</TableHead>
                     <TableHead>Notes</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
@@ -180,15 +187,22 @@ const TradeHistory = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>${trade.entry_price}</TableCell>
+                      <TableCell className="text-loss">${trade.sl || "-"}</TableCell>
+                      <TableCell className="text-success">${trade.tp || "-"}</TableCell>
                       <TableCell>${trade.exit_price}</TableCell>
                       <TableCell>{trade.lot_size}</TableCell>
+                      <TableCell className="text-primary">
+                        {trade.risk_reward ? `1:${trade.risk_reward.toFixed(2)}` : "-"}
+                      </TableCell>
                       <TableCell className={trade.result_usd >= 0 ? "text-success" : "text-loss"}>
                         {formatCurrency(trade.result_usd)}
                       </TableCell>
-                      <TableCell className={trade.pnl_percent >= 0 ? "text-success" : "text-loss"}>
-                        {trade.pnl_percent.toFixed(2)}%
+                      <TableCell>
+                        <Badge variant="outline" className="capitalize">
+                          {trade.emotional_psychology || "-"}
+                        </Badge>
                       </TableCell>
-                      <TableCell className="max-w-[200px] truncate">
+                      <TableCell className="max-w-[150px] truncate">
                         {trade.notes || "-"}
                       </TableCell>
                       <TableCell>
