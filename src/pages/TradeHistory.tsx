@@ -26,6 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Edit2, Trash2, Search, TrendingUp, TrendingDown } from "lucide-react";
 import { format } from "date-fns";
+import EditTradeDialog from "@/components/EditTradeDialog";
 
 interface Trade {
   id: string;
@@ -38,6 +39,7 @@ interface Trade {
   tp: number | null;
   lot_size: number;
   result_usd: number;
+  pnl_idr: number;
   pnl_percent: number;
   risk_reward: number | null;
   notes: string | null;
@@ -49,6 +51,8 @@ const TradeHistory = () => {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingTrade, setEditingTrade] = useState<Trade | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const fetchTrades = async () => {
     try {
@@ -93,8 +97,16 @@ const TradeHistory = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    const idr = amount * 15500; // Convert USD to IDR
-    return `Rp ${idr.toLocaleString('id-ID')}`;
+    return `Rp ${amount.toLocaleString('id-ID')}`;
+  };
+
+  const handleEditTrade = (trade: Trade) => {
+    setEditingTrade(trade);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleTradeUpdated = () => {
+    fetchTrades();
   };
 
   const filteredTrades = trades.filter(trade => 
@@ -194,8 +206,8 @@ const TradeHistory = () => {
                       <TableCell className="text-primary">
                         {trade.risk_reward ? `1:${trade.risk_reward.toFixed(2)}` : "-"}
                       </TableCell>
-                      <TableCell className={trade.result_usd >= 0 ? "text-success" : "text-loss"}>
-                        {formatCurrency(trade.result_usd)}
+                      <TableCell className={trade.pnl_idr >= 0 ? "text-success" : "text-loss"}>
+                        {formatCurrency(trade.pnl_idr)}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="capitalize">
@@ -207,7 +219,12 @@ const TradeHistory = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" className="theme-transition hover:bg-primary/10">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="theme-transition hover:bg-primary/10"
+                            onClick={() => handleEditTrade(trade)}
+                          >
                             <Edit2 className="w-3 h-3" />
                           </Button>
                           <AlertDialog>
@@ -244,6 +261,13 @@ const TradeHistory = () => {
           )}
         </CardContent>
       </Card>
+
+      <EditTradeDialog
+        trade={editingTrade}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onTradeUpdated={handleTradeUpdated}
+      />
     </div>
   );
 };

@@ -35,6 +35,7 @@ interface Trade {
   created_at: string;
   pair: string;
   result_usd: number;
+  pnl_idr?: number;
   pnl_percent: number;
   direction: "buy" | "sell";
 }
@@ -127,12 +128,12 @@ const Analytics = () => {
     
     trades.forEach(trade => {
       const weekStart = format(startOfWeek(new Date(trade.created_at)), 'MMM dd');
-      weeklyData[weekStart] = (weeklyData[weekStart] || 0) + trade.result_usd;
+      weeklyData[weekStart] = (weeklyData[weekStart] || 0) + (trade.pnl_idr || trade.result_usd * 15500);
     });
 
     return Object.entries(weeklyData).map(([week, profit]) => ({
       period: week,
-      profit: profit * 15500, // Convert to IDR
+      profit: profit,
     }));
   };
 
@@ -141,22 +142,22 @@ const Analytics = () => {
     
     trades.forEach(trade => {
       const monthStart = format(startOfMonth(new Date(trade.created_at)), 'MMM yyyy');
-      monthlyData[monthStart] = (monthlyData[monthStart] || 0) + trade.result_usd;
+      monthlyData[monthStart] = (monthlyData[monthStart] || 0) + (trade.pnl_idr || trade.result_usd * 15500);
     });
 
     return Object.entries(monthlyData).map(([month, profit]) => ({
       period: month,
-      profit: profit * 15500, // Convert to IDR
+      profit: profit,
     }));
   };
 
   const getEquityCurve = () => {
     let runningBalance = 0;
     return trades.map(trade => {
-      runningBalance += trade.result_usd;
+      runningBalance += (trade.pnl_idr || trade.result_usd * 15500);
       return {
         date: format(new Date(trade.created_at), 'MMM dd'),
-        balance: runningBalance * 15500, // Convert to IDR
+        balance: runningBalance,
       };
     });
   };
@@ -165,7 +166,7 @@ const Analytics = () => {
     const pairData: { [key: string]: number } = {};
     
     trades.forEach(trade => {
-      pairData[trade.pair] = (pairData[trade.pair] || 0) + trade.result_usd;
+      pairData[trade.pair] = (pairData[trade.pair] || 0) + (trade.pnl_idr || trade.result_usd * 15500);
     });
 
     // Dynamic colors based on theme
@@ -176,7 +177,7 @@ const Analytics = () => {
     
     return Object.entries(pairData).map(([pair, profit], index) => ({
       name: pair,
-      value: Math.abs(profit * 15500), // Convert to IDR and use absolute value for pie chart
+      value: Math.abs(profit), // Use absolute value for pie chart
       color: colors[index % colors.length],
     }));
   };

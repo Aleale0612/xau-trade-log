@@ -38,6 +38,7 @@ const AddTrade = () => {
     const sl = parseFloat(formData.stopLoss);
     const tp = parseFloat(formData.takeProfit);
     const risk = parseFloat(formData.riskPercent);
+    const exit = parseFloat(formData.exitPrice);
 
     if (!entry || !sl || !tp || !risk) return;
 
@@ -62,9 +63,24 @@ const AddTrade = () => {
     // Update lot size in form
     setFormData(prev => ({ ...prev, lotSize: lotSize.toFixed(2) }));
 
+    // Calculate PNL IDR if exit price is provided
+    let profitLossIDR = 0;
+    let profitLossPercent = 0;
+    
+    if (exit && entry) {
+      let pnlUSD = 0;
+      if (formData.direction === "buy") {
+        pnlUSD = (exit - entry) * lotSize * contractSize;
+      } else {
+        pnlUSD = (entry - exit) * lotSize * contractSize;
+      }
+      profitLossIDR = pnlUSD * 15500; // Convert to IDR
+      profitLossPercent = (pnlUSD / (entry * lotSize * contractSize)) * 100;
+    }
+
     setCalculations({
-      profitLossIDR: 0, // Will be calculated on exit
-      profitLossPercent: 0, // Will be calculated on exit
+      profitLossIDR,
+      profitLossPercent,
       riskReward: riskReward,
     });
   };
@@ -109,17 +125,38 @@ const AddTrade = () => {
     }
 
     try {
+      // Calculate final PNL for insertion
+      const exitPrice = parseFloat(formData.exitPrice) || parseFloat(formData.takeProfit);
+      const entryPrice = parseFloat(formData.entryPrice);
+      const lotSize = parseFloat(formData.lotSize);
+      const contractSize = 100;
+      
+      let resultUSD = 0;
+      let pnlPercent = 0;
+      let pnlIDR = 0;
+      
+      if (exitPrice && entryPrice && lotSize) {
+        if (formData.direction === "buy") {
+          resultUSD = (exitPrice - entryPrice) * lotSize * contractSize;
+        } else {
+          resultUSD = (entryPrice - exitPrice) * lotSize * contractSize;
+        }
+        pnlIDR = resultUSD * 15500;
+        pnlPercent = (resultUSD / (entryPrice * lotSize * contractSize)) * 100;
+      }
+
       const { error } = await supabase.from("trades").insert({
         pair: formData.pair,
         direction: formData.direction,
-        entry_price: parseFloat(formData.entryPrice),
-        exit_price: parseFloat(formData.takeProfit), // Using TP as exit for now
+        entry_price: entryPrice,
+        exit_price: exitPrice,
         sl: parseFloat(formData.stopLoss),
         tp: parseFloat(formData.takeProfit),
-        lot_size: parseFloat(formData.lotSize),
-        contract_size: 100, // XAUUSD standard
-        result_usd: 0, // Will be calculated when trade is closed
-        pnl_percent: 0, // Will be calculated when trade is closed
+        lot_size: lotSize,
+        contract_size: contractSize,
+        result_usd: resultUSD,
+        pnl_idr: pnlIDR,
+        pnl_percent: pnlPercent,
         risk_reward: calculations.riskReward,
         risk_percent: parseFloat(formData.riskPercent),
         notes: formData.notes || null,
@@ -161,7 +198,7 @@ const AddTrade = () => {
     if (formData.entryPrice && formData.stopLoss && formData.takeProfit && formData.riskPercent) {
       calculateResults();
     }
-  }, [formData.entryPrice, formData.stopLoss, formData.takeProfit, formData.riskPercent, formData.direction]);
+  }, [formData.entryPrice, formData.exitPrice, formData.stopLoss, formData.takeProfit, formData.riskPercent, formData.direction]);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -213,6 +250,18 @@ const AddTrade = () => {
                 placeholder="2050.00"
                 value={formData.entryPrice}
                 onChange={(e) => handleInputChange("entryPrice", e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="exitPrice">Exit Price (Optional)</Label>
+              <Input
+                id="exitPrice"
+                type="number"
+                step="0.01"
+                placeholder="2055.00"
+                value={formData.exitPrice}
+                onChange={(e) => handleInputChange("exitPrice", e.target.value)}
               />
             </div>
 
@@ -319,6 +368,13 @@ const AddTrade = () => {
                 <span className="font-medium">Auto Lot Size</span>
                 <span className="font-bold text-foreground">
                   {formData.lotSize || "0.00"}
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
+                <span className="font-medium">PNL (IDR)</span>
+                <span className={`font-bold ${calculations.profitLossIDR >= 0 ? 'text-success' : 'text-loss'}`}>
+                  Rp {calculations.profitLossIDR.toLocaleString('id-ID')}
                 </span>
               </div>
               

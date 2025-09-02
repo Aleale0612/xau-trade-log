@@ -30,7 +30,7 @@ export const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-trading-light bg-clip-text text-transparent">
-              XAU Trade Journal
+              JournalPapers
             </h1>
           </div>
           

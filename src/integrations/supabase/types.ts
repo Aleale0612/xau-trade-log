@@ -44,6 +44,7 @@ export type Database = {
           lot_size: number
           notes: string | null
           pair: string
+          pnl_idr: number | null
           pnl_percent: number
           result_usd: number
           risk_percent: number | null
@@ -64,6 +65,7 @@ export type Database = {
           lot_size: number
           notes?: string | null
           pair: string
+          pnl_idr?: number | null
           pnl_percent: number
           result_usd: number
           risk_percent?: number | null
@@ -84,6 +86,7 @@ export type Database = {
           lot_size?: number
           notes?: string | null
           pair?: string
+          pnl_idr?: number | null
           pnl_percent?: number
           result_usd?: number
           risk_percent?: number | null
