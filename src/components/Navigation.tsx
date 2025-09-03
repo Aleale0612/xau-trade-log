@@ -1,10 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import { Plus, History, TrendingUp } from "lucide-react";
+import { Plus, History, TrendingUp, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 
 export const Navigation = () => {
   const location = useLocation();
+  const { signOut } = useAuth();
 
   const navItems = [
     {
@@ -82,7 +85,17 @@ export const Navigation = () => {
               })}
             </nav>
             
-            <ThemeToggle />
+            <div className="flex items-center space-x-2">
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={signOut}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

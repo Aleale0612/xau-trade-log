@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
 import {
@@ -52,6 +53,7 @@ interface AnalyticsData {
 const Analytics = () => {
   const { toast } = useToast();
   const { theme } = useTheme();
+  const { user } = useAuth();
   const [trades, setTrades] = useState<Trade[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsData>({
     totalTrades: 0,
@@ -64,10 +66,13 @@ const Analytics = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchTrades = async () => {
+    if (!user) return;
+    
     try {
       const { data, error } = await supabase
         .from("trades")
         .select("*")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: true });
 
       if (error) throw error;
@@ -200,8 +205,10 @@ const Analytics = () => {
   };
 
   useEffect(() => {
-    fetchTrades();
-  }, []);
+    if (user) {
+      fetchTrades();
+    }
+  }, [user]);
 
   if (loading) {
     return (

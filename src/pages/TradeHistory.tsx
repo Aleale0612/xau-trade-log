@@ -23,6 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Edit2, Trash2, Search, TrendingUp, TrendingDown } from "lucide-react";
 import { format } from "date-fns";
@@ -48,6 +49,7 @@ interface Trade {
 
 const TradeHistory = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,10 +57,14 @@ const TradeHistory = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const fetchTrades = async () => {
+    if (!user) return;
+    
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from("trades")
         .select("*")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -115,8 +121,10 @@ const TradeHistory = () => {
   );
 
   useEffect(() => {
-    fetchTrades();
-  }, []);
+    if (user) {
+      fetchTrades();
+    }
+  }, [user]);
 
   if (loading) {
     return (

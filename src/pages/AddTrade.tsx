@@ -7,12 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Calculator, DollarSign, TrendingUp } from "lucide-react";
 
 const AddTrade = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const [formData, setFormData] = useState({
     pair: "XAUUSD",
@@ -161,6 +163,7 @@ const AddTrade = () => {
         risk_percent: parseFloat(formData.riskPercent),
         notes: formData.notes || null,
         emotional_psychology: formData.emotionalPsychology,
+        user_id: user?.id,
       });
 
       if (error) throw error;
