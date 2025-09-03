@@ -32,6 +32,36 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       trades: {
         Row: {
           contract_size: number
@@ -53,6 +83,7 @@ export type Database = {
           stop_loss: number | null
           take_profit: number | null
           tp: number | null
+          user_id: string | null
         }
         Insert: {
           contract_size: number
@@ -74,6 +105,7 @@ export type Database = {
           stop_loss?: number | null
           take_profit?: number | null
           tp?: number | null
+          user_id?: string | null
         }
         Update: {
           contract_size?: number
@@ -95,6 +127,7 @@ export type Database = {
           stop_loss?: number | null
           take_profit?: number | null
           tp?: number | null
+          user_id?: string | null
         }
         Relationships: []
       }
