@@ -415,8 +415,8 @@ const AddTrade = () => {
         </Card>
       </div>
 
-     {/* TradingView Chart */}
-<Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
+      {/* TradingView Chart */}
+      <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
   <CardHeader className="pb-4">
     <CardTitle className="flex items-center text-lg">
       <TrendingUp className="w-5 h-5 mr-2 text-primary" />
@@ -426,11 +426,11 @@ const AddTrade = () => {
   <CardContent className="p-0">
     <div className="w-full h-[600px] overflow-hidden rounded-b-lg">
       <iframe
-        src="https://s.tradingview.com/widgetembed/?symbol=XAUUSD&interval=15&hidesidetoolbar=0&hidetoptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&theme=dark&style=1&timezone=Etc%2FUTC&locale=en"
+        src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_advanced&symbol=XAUUSD&interval=15&sidetoolbar=0&toptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&hideideas=1&theme=dark&style=1&timezone=Etc%2FUTC&locale=en"
         className="w-full h-full border-0"
         title="TradingView Advanced Chart"
         allowFullScreen
-      ></iframe>
+      />
           </div>
         </CardContent>
       </Card>
