@@ -204,13 +204,13 @@ const AddTrade = () => {
   }, [formData.entryPrice, formData.exitPrice, formData.stopLoss, formData.takeProfit, formData.riskPercent, formData.direction]);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="text-center">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div className="text-center space-y-3">
         <h1 className="text-3xl font-bold text-foreground">Add New Trade</h1>
-        <p className="text-muted-foreground mt-2">Record your XAUUSD trading performance</p>
+        <p className="text-muted-foreground">Record your XAUUSD trading performance</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center">
