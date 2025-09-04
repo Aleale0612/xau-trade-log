@@ -420,15 +420,15 @@ const AddTrade = () => {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-lg">
             <TrendingUp className="w-5 h-5 mr-2 text-primary" />
-            Live Trading Chart
+            XAUUSD Live Chart - Pepperstone
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="w-full h-[550px] overflow-hidden rounded-b-lg">
+          <div className="w-full h-[500px] overflow-hidden rounded-b-lg">
             <iframe
-              src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_advanced&symbol=XAUUSD&interval=15&hidesidetoolbar=0&hidetoptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&hideideas=1&theme=light&style=1&timezone=Etc%2FUTC&studies_overrides=%7B%22volume.volume.color.0%22%3A%22%23ff0000%22%2C%22volume.volume.color.1%22%3A%22%2300ff00%22%2C%22volume.volume.transparency%22%3A100%7D&overrides=%7B%22mainSeriesProperties.showCountdown%22%3Atrue%2C%22paneProperties.background%22%3A%22%23ffffff%22%2C%22paneProperties.vertGridProperties.color%22%3A%22%23f0f0f0%22%2C%22paneProperties.horzGridProperties.color%22%3A%22%23f0f0f0%22%7D&enabled_features=%5B%22drawing_templates%22%2C%22study_templates%22%2C%22use_localstorage_for_settings%22%2C%22left_toolbar%22%2C%22header_symbol_search%22%2C%22symbol_search_hot_key%22%5D&disabled_features=%5B%22volume_force_overlay%22%2C%22create_volume_indicator_by_default%22%5D&locale=en&utm_source=localhost&utm_medium=widget&utm_campaign=chart&utm_term=XAUUSD"
+              src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_12345&symbol=PEPPERSTONE%3AXAUUSD&interval=15&hidesidetoolbar=1&hidetoptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&hideideas=1&theme=light&style=1&timezone=Etc%2FUTC&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utm_source=localhost&utm_medium=widget_new&utm_campaign=chart&utm_term=PEPPERSTONE%3AXAUUSD"
               className="w-full h-full border-0"
-              title="TradingView Advanced Chart"
+              title="XAUUSD Chart"
             />
           </div>
         </CardContent>
