@@ -204,7 +204,7 @@ const AddTrade = () => {
   }, [formData.entryPrice, formData.exitPrice, formData.stopLoss, formData.takeProfit, formData.riskPercent, formData.direction]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 space-y-8">
       <div className="text-center space-y-3">
         <h1 className="text-3xl font-bold text-foreground">Add New Trade</h1>
         <p className="text-muted-foreground">Record your XAUUSD trading performance</p>
