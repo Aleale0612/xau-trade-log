@@ -424,36 +424,13 @@ const AddTrade = () => {
     </CardTitle>
   </CardHeader>
   <CardContent className="p-0">
-    <div className="w-full h-[600px] overflow-hidden rounded-b-lg" id="tradingview_chart">
-      {/* TradingView Widget */}
-      <script
-        type="text/javascript"
-        src="https://s3.tradingview.com/tv.js"
-      ></script>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            new TradingView.widget({
-              "autosize": true,
-              "symbol": "OANDA:XAUUSD", // default pair
-              "interval": "15",
-              "timezone": "Etc/UTC",
-              "theme": "dark",
-              "style": "1",
-              "locale": "en",
-              "enable_publishing": false,
-              "withdateranges": true,
-              "hide_side_toolbar": false,
-              "allow_symbol_change": true,   // bisa ganti pair
-              "details": true,
-              "hotlist": true,
-              "calendar": true,
-              "studies": [],
-              "container_id": "tradingview_chart"
-            });
-          `,
-        }}
-      />
+    <div className="w-full h-[600px] overflow-hidden rounded-b-lg">
+      <iframe
+        src="https://s.tradingview.com/widgetembed/?symbol=XAUUSD&interval=15&hidesidetoolbar=0&hidetoptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&theme=dark&style=1&timezone=Etc%2FUTC&locale=en"
+        className="w-full h-full border-0"
+        title="TradingView Advanced Chart"
+        allowFullScreen
+      ></iframe>
           </div>
         </CardContent>
       </Card>
