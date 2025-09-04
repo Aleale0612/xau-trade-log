@@ -204,73 +204,81 @@ const AddTrade = () => {
   }, [formData.entryPrice, formData.exitPrice, formData.stopLoss, formData.takeProfit, formData.riskPercent, formData.direction]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 space-y-8">
-      <div className="text-center space-y-3">
-        <h1 className="text-3xl font-bold text-foreground">Add New Trade</h1>
-        <p className="text-muted-foreground">Record your XAUUSD trading performance</p>
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 space-y-6">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl font-bold text-foreground">Add New Trade</h1>
+        <p className="text-sm text-muted-foreground">Record your XAUUSD trading performance</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
-          <CardHeader>
-            <CardTitle className="flex items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Trade Details - Compact Two Column Layout */}
+        <Card className="lg:col-span-2 theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center text-lg">
               <DollarSign className="w-5 h-5 mr-2 text-primary" />
               Trade Details
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="pair">Trading Pair</Label>
-              <Select value={formData.pair} onValueChange={(value) => handleInputChange("pair", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="XAUUSD">XAU/USD (Gold)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="direction">Direction</Label>
-              <Select value={formData.direction} onValueChange={(value) => handleInputChange("direction", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="buy">Buy (Long)</SelectItem>
-                  <SelectItem value="sell">Sell (Short)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="entryPrice">Entry Price</Label>
-              <Input
-                id="entryPrice"
-                type="number"
-                step="0.01"
-                placeholder="2050.00"
-                value={formData.entryPrice}
-                onChange={(e) => handleInputChange("entryPrice", e.target.value)}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="exitPrice">Exit Price (Optional)</Label>
-              <Input
-                id="exitPrice"
-                type="number"
-                step="0.01"
-                placeholder="2055.00"
-                value={formData.exitPrice}
-                onChange={(e) => handleInputChange("exitPrice", e.target.value)}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+            {/* First Row - Pair and Direction */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="stopLoss">Stop Loss (SL)</Label>
+                <Label htmlFor="pair" className="text-sm font-medium">Trading Pair</Label>
+                <Select value={formData.pair} onValueChange={(value) => handleInputChange("pair", value)}>
+                  <SelectTrigger className="h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="XAUUSD">XAU/USD (Gold)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="direction" className="text-sm font-medium">Direction</Label>
+                <Select value={formData.direction} onValueChange={(value) => handleInputChange("direction", value)}>
+                  <SelectTrigger className="h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="buy">Buy (Long)</SelectItem>
+                    <SelectItem value="sell">Sell (Short)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Second Row - Entry and Exit */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="entryPrice" className="text-sm font-medium">Entry Price</Label>
+                <Input
+                  id="entryPrice"
+                  type="number"
+                  step="0.01"
+                  placeholder="2050.00"
+                  value={formData.entryPrice}
+                  onChange={(e) => handleInputChange("entryPrice", e.target.value)}
+                  className="h-9"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="exitPrice" className="text-sm font-medium">Exit Price (Optional)</Label>
+                <Input
+                  id="exitPrice"
+                  type="number"
+                  step="0.01"
+                  placeholder="2055.00"
+                  value={formData.exitPrice}
+                  onChange={(e) => handleInputChange("exitPrice", e.target.value)}
+                  className="h-9"
+                />
+              </div>
+            </div>
+
+            {/* Third Row - SL and TP */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="stopLoss" className="text-sm font-medium">Stop Loss (SL)</Label>
                 <Input
                   id="stopLoss"
                   type="number"
@@ -278,11 +286,11 @@ const AddTrade = () => {
                   placeholder="2045.00"
                   value={formData.stopLoss}
                   onChange={(e) => handleInputChange("stopLoss", e.target.value)}
-                  className={!validateInputs() && formData.entryPrice && formData.stopLoss ? "border-destructive" : ""}
+                  className={`h-9 ${!validateInputs() && formData.entryPrice && formData.stopLoss ? "border-destructive" : ""}`}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="takeProfit">Take Profit (TP)</Label>
+                <Label htmlFor="takeProfit" className="text-sm font-medium">Take Profit (TP)</Label>
                 <Input
                   id="takeProfit"
                   type="number"
@@ -290,14 +298,15 @@ const AddTrade = () => {
                   placeholder="2055.00"
                   value={formData.takeProfit}
                   onChange={(e) => handleInputChange("takeProfit", e.target.value)}
-                  className={!validateInputs() && formData.entryPrice && formData.takeProfit ? "border-destructive" : ""}
+                  className={`h-9 ${!validateInputs() && formData.entryPrice && formData.takeProfit ? "border-destructive" : ""}`}
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Fourth Row - Lot Size and Risk */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="lotSize">Lot Size (Auto)</Label>
+                <Label htmlFor="lotSize" className="text-sm font-medium">Lot Size (Auto)</Label>
                 <Input
                   id="lotSize"
                   type="number"
@@ -305,11 +314,11 @@ const AddTrade = () => {
                   placeholder="0.10"
                   value={formData.lotSize}
                   readOnly
-                  className="bg-secondary/20"
+                  className="h-9 bg-secondary/20"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="riskPercent">Risk %</Label>
+                <Label htmlFor="riskPercent" className="text-sm font-medium">Risk %</Label>
                 <Input
                   id="riskPercent"
                   type="number"
@@ -317,14 +326,16 @@ const AddTrade = () => {
                   placeholder="2.0"
                   value={formData.riskPercent}
                   onChange={(e) => handleInputChange("riskPercent", e.target.value)}
+                  className="h-9"
                 />
               </div>
             </div>
 
+            {/* Fifth Row - Psychology */}
             <div className="space-y-2">
-              <Label htmlFor="emotionalPsychology">Emotional Psychology</Label>
+              <Label htmlFor="emotionalPsychology" className="text-sm font-medium">Emotional Psychology</Label>
               <Select value={formData.emotionalPsychology} onValueChange={(value) => handleInputChange("emotionalPsychology", value)}>
-                <SelectTrigger>
+                <SelectTrigger className="h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -338,71 +349,90 @@ const AddTrade = () => {
               </Select>
             </div>
 
+            {/* Notes */}
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes (Optional)</Label>
+              <Label htmlFor="notes" className="text-sm font-medium">Notes (Optional)</Label>
               <Textarea
                 id="notes"
                 placeholder="Trade analysis, market conditions, etc..."
                 value={formData.notes}
                 onChange={(e) => handleInputChange("notes", e.target.value)}
-                className="min-h-[80px]"
+                className="min-h-[60px] resize-none"
               />
             </div>
           </CardContent>
         </Card>
 
+        {/* Calculated Results - Compact */}
         <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
-          <CardHeader>
-            <CardTitle className="flex items-center">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center text-lg">
               <Calculator className="w-5 h-5 mr-2 text-success" />
-              Calculated Results
+              Results
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
-                <span className="font-medium">Risk Reward</span>
-                <span className="font-bold text-primary">
-                  1:{calculations.riskReward.toFixed(2)}
-                </span>
-              </div>
-              
-              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
-                <span className="font-medium">Auto Lot Size</span>
-                <span className="font-bold text-foreground">
-                  {formData.lotSize || "0.00"}
-                </span>
-              </div>
-              
-              <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
-                <span className="font-medium">PNL (IDR)</span>
-                <span className={`font-bold ${calculations.profitLossIDR >= 0 ? 'text-success' : 'text-loss'}`}>
-                  Rp {calculations.profitLossIDR.toLocaleString('id-ID')}
-                </span>
-              </div>
-              
-              <div className="p-3 rounded-lg bg-secondary/20 border border-border/30 theme-transition">
-                <div className="text-sm text-muted-foreground mb-2">Validation:</div>
-                <div className={`text-sm font-medium ${validateInputs() || (!formData.entryPrice || !formData.stopLoss || !formData.takeProfit) ? 'text-success' : 'text-destructive'}`}>
-                  {formData.direction === "buy" ? "Buy: SL < Entry < TP" : "Sell: TP < Entry < SL"}
-                </div>
-                {formData.entryPrice && formData.stopLoss && formData.takeProfit && (
-                  <div className={`text-xs mt-1 ${validateInputs() ? 'text-success' : 'text-destructive'}`}>
-                    {validateInputs() ? "✓ Valid setup" : "✗ Invalid setup"}
-                  </div>
-                )}
-              </div>
+          <CardContent className="space-y-3">
+            <div className="flex justify-between items-center p-2 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
+              <span className="text-sm font-medium">Risk Reward</span>
+              <span className="text-sm font-bold text-primary">
+                1:{calculations.riskReward.toFixed(2)}
+              </span>
             </div>
+            
+            <div className="flex justify-between items-center p-2 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
+              <span className="text-sm font-medium">Auto Lot</span>
+              <span className="text-sm font-bold text-foreground">
+                {formData.lotSize || "0.00"}
+              </span>
+            </div>
+            
+            <div className="flex justify-between items-center p-2 rounded-lg bg-secondary/50 border border-border/30 theme-transition">
+              <span className="text-sm font-medium">PNL (IDR)</span>
+              <span className={`text-sm font-bold ${calculations.profitLossIDR >= 0 ? 'text-success' : 'text-loss'}`}>
+                Rp {Math.abs(calculations.profitLossIDR).toLocaleString('id-ID')}
+              </span>
+            </div>
+            
+            <div className="p-2 rounded-lg bg-secondary/20 border border-border/30 theme-transition">
+              <div className="text-xs text-muted-foreground mb-1">Validation:</div>
+              <div className={`text-xs font-medium ${validateInputs() || (!formData.entryPrice || !formData.stopLoss || !formData.takeProfit) ? 'text-success' : 'text-destructive'}`}>
+                {formData.direction === "buy" ? "Buy: SL < Entry < TP" : "Sell: TP < Entry < SL"}
+              </div>
+              {formData.entryPrice && formData.stopLoss && formData.takeProfit && (
+                <div className={`text-xs mt-1 ${validateInputs() ? 'text-success' : 'text-destructive'}`}>
+                  {validateInputs() ? "✓ Valid setup" : "✗ Invalid setup"}
+                </div>
+              )}
+            </div>
+
+            <form onSubmit={handleSubmit} className="pt-2">
+              <Button type="submit" size="sm" className="w-full">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Add Trade
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex justify-center">
-        <Button type="submit" size="lg" className="min-w-[200px]">
-          <TrendingUp className="w-4 h-4 mr-2" />
-          Add Trade
-        </Button>
-      </form>
+      {/* TradingView Chart */}
+      <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center text-lg">
+            <TrendingUp className="w-5 h-5 mr-2 text-primary" />
+            XAUUSD Live Chart - Pepperstone
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="w-full h-[500px] overflow-hidden rounded-b-lg">
+            <iframe
+              src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_12345&symbol=PEPPERSTONE%3AXAUUSD&interval=15&hidesidetoolbar=1&hidetoptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&hideideas=1&theme=light&style=1&timezone=Etc%2FUTC&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utm_source=localhost&utm_medium=widget_new&utm_campaign=chart&utm_term=PEPPERSTONE%3AXAUUSD"
+              className="w-full h-full border-0"
+              title="XAUUSD Chart"
+            />
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
