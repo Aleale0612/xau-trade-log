@@ -415,8 +415,8 @@ const AddTrade = () => {
         </Card>
       </div>
 
-      {/* TradingView Chart */}
-      <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
+     {/* TradingView Chart */}
+<Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
   <CardHeader className="pb-4">
     <CardTitle className="flex items-center text-lg">
       <TrendingUp className="w-5 h-5 mr-2 text-primary" />
@@ -424,12 +424,35 @@ const AddTrade = () => {
     </CardTitle>
   </CardHeader>
   <CardContent className="p-0">
-    <div className="w-full h-[600px] overflow-hidden rounded-b-lg">
-      <iframe
-        src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_advanced&symbol=XAUUSD&interval=15&hidesidetoolbar=0&hidetoptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&hideideas=1&theme=dark&style=1&timezone=Etc%2FUTC&locale=en"
-        className="w-full h-full border-0"
-        title="TradingView Advanced Chart"
-        allowFullScreen
+    <div className="w-full h-[600px] overflow-hidden rounded-b-lg" id="tradingview_chart">
+      {/* TradingView Widget */}
+      <script
+        type="text/javascript"
+        src="https://s3.tradingview.com/tv.js"
+      ></script>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            new TradingView.widget({
+              "autosize": true,
+              "symbol": "OANDA:XAUUSD", // default pair
+              "interval": "15",
+              "timezone": "Etc/UTC",
+              "theme": "dark",
+              "style": "1",
+              "locale": "en",
+              "enable_publishing": false,
+              "withdateranges": true,
+              "hide_side_toolbar": false,
+              "allow_symbol_change": true,   // bisa ganti pair
+              "details": true,
+              "hotlist": true,
+              "calendar": true,
+              "studies": [],
+              "container_id": "tradingview_chart"
+            });
+          `,
+        }}
       />
           </div>
         </CardContent>
