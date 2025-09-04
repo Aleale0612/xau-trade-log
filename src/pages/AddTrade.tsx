@@ -417,19 +417,20 @@ const AddTrade = () => {
 
       {/* TradingView Chart */}
       <Card className="theme-transition bg-gradient-to-br from-card to-card/50 shadow-lg border border-border/50">
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center text-lg">
-            <TrendingUp className="w-5 h-5 mr-2 text-primary" />
-            XAUUSD Live Chart - Pepperstone
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="w-full h-[500px] overflow-hidden rounded-b-lg">
-            <iframe
-              src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_12345&symbol=PEPPERSTONE%3AXAUUSD&interval=15&hidesidetoolbar=1&hidetoptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&hideideas=1&theme=light&style=1&timezone=Etc%2FUTC&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utm_source=localhost&utm_medium=widget_new&utm_campaign=chart&utm_term=PEPPERSTONE%3AXAUUSD"
-              className="w-full h-full border-0"
-              title="XAUUSD Chart"
-            />
+  <CardHeader className="pb-4">
+    <CardTitle className="flex items-center text-lg">
+      <TrendingUp className="w-5 h-5 mr-2 text-primary" />
+      Live Chart - TradingView
+    </CardTitle>
+  </CardHeader>
+  <CardContent className="p-0">
+    <div className="w-full h-[600px] overflow-hidden rounded-b-lg">
+      <iframe
+        src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_advanced&symbol=XAUUSD&interval=15&hidesidetoolbar=0&hidetoptoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&hideideas=1&theme=dark&style=1&timezone=Etc%2FUTC&locale=en"
+        className="w-full h-full border-0"
+        title="TradingView Advanced Chart"
+        allowFullScreen
+      />
           </div>
         </CardContent>
       </Card>
