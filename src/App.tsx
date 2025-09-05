@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import AddTrade from "./pages/AddTrade";
 import TradeHistory from "./pages/TradeHistory";
 import Analytics from "./pages/Analytics";
+import TradingMentor from "./pages/TradingMentor";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +63,15 @@ const App = () => (
                       <main className="container mx-auto px-4 py-8">
                         <Analytics />
                       </main>
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/mentor" 
+                  element={
+                    <ProtectedRoute>
+                      <Navigation />
+                      <TradingMentor />
                     </ProtectedRoute>
                   } 
                 />

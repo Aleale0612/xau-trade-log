@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Plus, History, TrendingUp, LogOut } from "lucide-react";
+import { Plus, History, TrendingUp, LogOut, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,6 +24,11 @@ export const Navigation = () => {
       name: "Analytics",
       path: "/analytics", 
       icon: TrendingUp,
+    },
+    {
+      name: "Trading Mentor",
+      path: "/mentor",
+      icon: Brain,
     },
   ];
 
